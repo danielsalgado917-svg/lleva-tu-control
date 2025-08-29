@@ -244,18 +244,18 @@
       color: #555;
       font-weight: 600;
     }
-    .modal-content input[type="password"] {
-      font-size: 1.5rem;
+    .modal-content input[type="password"], .modal-content input[type="datetime-local"] {
+      font-size: 1.1rem;
       padding: 8px 12px;
       width: 100%;
       border: 2px solid var(--accent);
       border-radius: 8px;
       text-align: center;
       font-weight: 700;
-      letter-spacing: 6px;
+      letter-spacing: 0;
       user-select: text;
     }
-    .modal-content input[type="password"]:focus {
+    .modal-content input[type="password"]:focus, .modal-content input[type="datetime-local"]:focus {
       outline: none;
       box-shadow: 0 0 8px var(--accent);
       border-color: var(--accent);
@@ -320,7 +320,6 @@
 </head>
 <body>
   <div class="app" id="app">
-    <!-- === Tu contenido intacto === -->
     <header>
       <div class="title-container">
         <div class="title">Lleva tu control</div>
@@ -348,6 +347,11 @@
         <div>
           <label for="kms">Kilómetros recorridos desde último tanqueo</label>
           <input id="kms" type="number" step="0.1" min="0" class="input" placeholder="Ej: 120.5" required>
+        </div>
+        <!-- Nuevo campo fecha y hora -->
+        <div>
+          <label for="datetime">Fecha y hora del tanqueo</label>
+          <input id="datetime" type="datetime-local" class="input">
         </div>
         <div style="display:flex;flex-direction:column;justify-content:flex-end;">
           <label style="visibility:hidden">enviar</label>
@@ -391,7 +395,7 @@
     </footer>
   </div>
 
-<!-- Modal Redes (solo esta parte reemplazada) -->
+<!-- Modal Redes -->
 <div id="modalRedes" aria-modal="true" role="dialog">
   <div class="modal-content">
     <h2>Sígueme en mis redes</h2>
@@ -411,55 +415,55 @@
   </div>
 </div>
 
-
-  <!-- === Modal Código de seguridad (igual que tu original) === -->
-  <div id="modalCode" aria-modal="true" role="dialog">
-    <div class="modal-content">
-      <h2>Crear código de seguridad</h2>
-      <p>Ingresa un código único de 4 dígitos que se usará para proteger tus datos.</p>
-      <input id="codeInput" type="password" maxlength="4" inputmode="numeric">
-      <div class="error-msg" id="codeError"></div>
-      <div class="modal-buttons">
-        <button id="saveCodeBtn" class="btn-primary" disabled>Guardar código</button>
-      </div>
+<!-- === Modal Código de seguridad === -->
+<div id="modalCode" aria-modal="true" role="dialog">
+  <div class="modal-content">
+    <h2>Crear código de seguridad</h2>
+    <p>Ingresa un código único de 4 dígitos que se usará para proteger tus datos.</p>
+    <input id="codeInput" type="password" maxlength="4" inputmode="numeric">
+    <div class="error-msg" id="codeError"></div>
+    <div class="modal-buttons">
+      <button id="saveCodeBtn" class="btn-primary" disabled>Guardar código</button>
     </div>
   </div>
-  <div id="modalChangeCode" aria-modal="true" role="dialog">
-    <div class="modal-content">
-      <h2>Cambiar código de seguridad</h2>
-      <p>Ingresa el código actual para continuar.</p>
-      <input id="currentCodeInput" type="password" maxlength="4" inputmode="numeric">
-      <div class="error-msg" id="changeCodeError"></div>
-      <div class="modal-buttons">
-        <button id="confirmCurrentCodeBtn" class="btn-primary" disabled>Confirmar código</button>
-        <button id="cancelChangeCodeBtn" class="btn-secondary">Cancelar</button>
-      </div>
+</div>
+<div id="modalChangeCode" aria-modal="true" role="dialog">
+  <div class="modal-content">
+    <h2>Cambiar código de seguridad</h2>
+    <p>Ingresa el código actual para continuar.</p>
+    <input id="currentCodeInput" type="password" maxlength="4" inputmode="numeric">
+    <div class="error-msg" id="changeCodeError"></div>
+    <div class="modal-buttons">
+      <button id="confirmCurrentCodeBtn" class="btn-primary" disabled>Confirmar código</button>
+      <button id="cancelChangeCodeBtn" class="btn-secondary">Cancelar</button>
     </div>
   </div>
-  <div id="modalPromptCode" aria-modal="true" role="dialog">
-    <div class="modal-content">
-      <h2>Ingresar código de seguridad</h2>
-      <p>Para confirmar esta acción, ingresa tu código de 4 dígitos.</p>
-      <input id="promptCodeInput" type="password" maxlength="4" inputmode="numeric">
-      <div class="error-msg" id="promptCodeError"></div>
-      <div class="modal-buttons">
-        <button id="confirmPromptCodeBtn" class="btn-primary" disabled>Confirmar</button>
-        <button id="cancelPromptCodeBtn" class="btn-secondary">Cancelar</button>
-      </div>
+</div>
+<div id="modalPromptCode" aria-modal="true" role="dialog">
+  <div class="modal-content">
+    <h2>Ingresar código de seguridad</h2>
+    <p>Para confirmar esta acción, ingresa tu código de 4 dígitos.</p>
+    <input id="promptCodeInput" type="password" maxlength="4" inputmode="numeric">
+    <div class="error-msg" id="promptCodeError"></div>
+    <div class="modal-buttons">
+      <button id="confirmPromptCodeBtn" class="btn-primary" disabled>Confirmar</button>
+      <button id="cancelPromptCodeBtn" class="btn-secondary">Cancelar</button>
     </div>
   </div>
+</div>
 
-  <!-- === Librería XLSX === -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<!-- === Librería XLSX === -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-  <script>
-  (function(){
+<script>
+(function(){
     const STORAGE_KEY = 'lleva_tu_control_registros_v1';
     const CODE_KEY = 'LlevaTuControlCode';
     const el = id=>document.getElementById(id);
     const vehicle = el('vehicle');
     const amount = el('amount');
     const kms = el('kms');
+    const datetime = el('datetime'); // nuevo campo
     const saveBtn = el('saveBtn');
     const exportBtn = el('exportBtn');
     const clearBtn = el('clearBtn');
@@ -471,14 +475,13 @@
     const modalChangeCode = el('modalChangeCode'), currentCodeInput = el('currentCodeInput'), changeCodeError = el('changeCodeError'), confirmCurrentCodeBtn = el('confirmCurrentCodeBtn'), cancelChangeCodeBtn = el('cancelChangeCodeBtn');
     const modalPromptCode = el('modalPromptCode'), promptCodeInput = el('promptCodeInput'), promptCodeError = el('promptCodeError'), confirmPromptCodeBtn = el('confirmPromptCodeBtn'), cancelPromptCodeBtn = el('cancelPromptCodeBtn');
 
-    // === Modal Redes ===
     const modalRedes = el('modalRedes'), continuarRedes = el('continuarRedes');
 
     if(!localStorage.getItem('modalRedesShown')){
         showModal(modalRedes);
     }
 
-    continuarRedes.onclick = ()=>{
+    continuarRedes.onclick = ()=>{ 
         hideModal(modalRedes);
         localStorage.setItem('modalRedesShown','true');
         if(!localStorage.getItem(CODE_KEY)){ 
@@ -508,19 +511,27 @@
     }
 
     saveBtn.onclick=()=>{ 
-      addRecord({ts: nowISO(), vehicle:vehicle.value, amount:amount.value, kms:kms.value});
-      amount.value=''; kms.value=''; 
+      const fechaHora = datetime.value ? new Date(datetime.value).toISOString() : nowISO();
+      addRecord({ts: fechaHora, vehicle:vehicle.value, amount:amount.value, kms:kms.value});
+      amount.value=''; kms.value=''; datetime.value='';
     }
 
-    tableBody.addEventListener('click',e=>{
+    // ==== NUEVO: Borrar individual requiere código ===
+    tableBody.addEventListener('click', e => {
       if(e.target.matches('.delete-single')){
-        const i=e.target.dataset.i;
-        const arr = load();
-        arr.splice(i,1); saveAll(arr);
+        const i = e.target.dataset.i;
+        actionToConfirm = { type: 'deleteOne', index: i };
+        showModal(modalPromptCode);
       }
     });
 
-    // ==== NUEVO: Exportar Excel ====
+    // ==== Borrar todo con código ====
+    clearBtn.onclick = () => {
+      actionToConfirm = { type: 'clearAll' };
+      showModal(modalPromptCode);
+    }
+
+    // ==== Exportar Excel ====
     exportBtn.onclick = ()=>{
       const arr = load();
       if(arr.length===0){ alert('No hay registros para exportar.'); return; }
@@ -551,9 +562,7 @@
 
     if(!localStorage.getItem(CODE_KEY)){ showModal(modalCode); }
 
-    codeInput.addEventListener('input', ()=>{
-      saveCodeBtn.disabled = codeInput.value.length!==4;
-    });
+    codeInput.addEventListener('input', ()=>{ saveCodeBtn.disabled = codeInput.value.length!==4; });
     saveCodeBtn.onclick = ()=>{
       localStorage.setItem(CODE_KEY, codeInput.value);
       securityCode = codeInput.value;
@@ -570,22 +579,27 @@
     }
     cancelChangeCodeBtn.onclick=()=>{ currentCodeInput.value=''; hideModal(modalChangeCode); }
 
-    // Borrar todo con código
-    clearBtn.onclick = ()=>{
-      actionToConfirm='clearAll';
-      showModal(modalPromptCode);
-    }
+    // ==== Confirmar acción con código (borrar uno o todos) ====
     promptCodeInput.addEventListener('input', ()=>{ confirmPromptCodeBtn.disabled = promptCodeInput.value.length!==4; });
     confirmPromptCodeBtn.onclick = ()=>{
       if(promptCodeInput.value === localStorage.getItem(CODE_KEY)){
-        if(actionToConfirm==='clearAll'){ localStorage.removeItem(STORAGE_KEY); render(); }
-        promptCodeInput.value=''; hideModal(modalPromptCode);
+        if(actionToConfirm.type==='clearAll'){ localStorage.removeItem(STORAGE_KEY); }
+        else if(actionToConfirm.type==='deleteOne'){
+          const arr = load();
+          arr.splice(actionToConfirm.index, 1);
+          saveAll(arr);
+        }
+        render();
+        promptCodeInput.value='';
+        hideModal(modalPromptCode);
       } else { promptCodeError.textContent='Código incorrecto'; setTimeout(()=>promptCodeError.textContent='',2000); }
     }
     cancelPromptCodeBtn.onclick=()=>{ promptCodeInput.value=''; hideModal(modalPromptCode); }
 
     render();
-  })();
-  </script>
+})();
+</script>
 </body>
 </html>
+
+

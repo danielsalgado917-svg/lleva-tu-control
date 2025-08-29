@@ -1,0 +1,591 @@
+<!doctype html> 
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lleva tu control</title>
+  <style>
+    /* === Tu CSS intacto === */
+    :root{
+      --sky:#87ceeb; /* azul celeste */
+      --accent:#0056b3;
+      --card:#ffffffcc;
+      --muted:#444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background:linear-gradient(180deg,var(--sky),#cfefff 70%);
+      min-height:100vh;color:#03335a;
+      display:flex;align-items:center;justify-content:center;padding:18px;
+    }
+    .app{
+      width:100%;max-width:980px;background:rgba(255,255,255,0.96);border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(0,0,0,0.12);
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+      flex-wrap: wrap;
+      gap:12px;
+    }
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      min-width: 180px;
+    }
+    .title{
+      font-size:1.6rem;
+      font-weight:700;
+      color: #03335a;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .right-corner {
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      white-space: nowrap;
+      min-width: 160px;
+      justify-content: flex-end;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 6px 12px;
+      user-select: none;
+      font-family: 'Arial Black', Arial, sans-serif;
+      background: linear-gradient(90deg, #0056b3 0%, #87ceeb 100%);
+      box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+    }
+    .initials{
+      font-weight:700;
+      background:linear-gradient(90deg,#ffde59,#ff7b7b);
+      padding:6px 10px;
+      border-radius:10px;
+      color:#063047;
+      user-select: none;
+      font-size: 1.1rem;
+      font-family: 'Segoe UI Black', 'Arial Black', Arial, sans-serif;
+    }
+    form{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:16px;
+      margin-bottom:16px;
+    }
+    label{
+      display:block;
+      font-size:0.9rem;
+      margin-bottom:6px;
+      color: #03335a;
+      font-weight: 600;
+    }
+    .input,select{
+      width:100%;
+      padding:12px;
+      border-radius:8px;
+      border:1px solid rgba(3,51,90,0.18);
+      font-size:1.1rem;
+      color: #03335a;
+      font-weight: 600;
+      transition: border-color 0.3s ease;
+    }
+    .input:focus, select:focus {
+      outline:none;
+      border-color: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+      justify-content: flex-end;
+    }
+    button{
+      background:var(--accent);
+      color:white;
+      border:none;
+      padding:12px 16px;
+      border-radius:8px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:1rem;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    button:hover{
+      background:#003f7f;
+    }
+    button.ghost{
+      background:transparent;
+      color:var(--accent);
+      border:2px solid var(--accent);
+      font-weight: 700;
+      transition: background-color 0.3s ease,color 0.3s ease;
+    }
+    button.ghost:hover{
+      background:var(--accent);
+      color:#fff;
+    }
+    .card{
+      background:var(--card);
+      padding:16px;
+      border-radius:12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:1rem;
+    }
+    th,td{
+      padding:10px 12px;
+      text-align:left;
+      border-bottom:1px solid rgba(3,51,90,0.08);
+      color: #03335a;
+    }
+    th{
+      font-weight:700;
+      background: #d0e8ff;
+    }
+    .small{
+      font-size:0.8rem;
+      color:var(--muted);
+      font-weight: 500;
+    }
+    .top-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      flex-wrap: wrap;
+    }
+    @media(max-width:600px){
+      .title{
+        font-size:1.3rem;
+      }
+      .right-corner {
+        min-width: auto;
+        font-size: 1rem;
+        padding: 4px 8px;
+      }
+      form{
+        gap:12px;
+      }
+    }
+    .delete-single{
+      background:#ff4d4f;
+      padding:6px 8px;
+      border-radius:6px;
+      border:none;
+      color:white;
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    .delete-single:hover {
+      background: #c53030;
+    }
+    .badge{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      background:#e6f6ff;
+      color:#036;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    /* Modales intactos */
+    #modalCode, #modalChangeCode, #modalPromptCode, #modalRedes {
+      position: fixed;
+      top:0; left:0; width:100vw; height:100vh;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 9999;
+    }
+    #modalCode.active, #modalChangeCode.active, #modalPromptCode.active, #modalRedes.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 20px 28px;
+      max-width: 320px;
+      width: 90vw;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      text-align: center;
+      user-select: none;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    .modal-content p {
+      margin: 12px 0 18px 0;
+      color: #555;
+      font-weight: 600;
+    }
+    .modal-content input[type="password"] {
+      font-size: 1.5rem;
+      padding: 8px 12px;
+      width: 100%;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 6px;
+      user-select: text;
+    }
+    .modal-content input[type="password"]:focus {
+      outline: none;
+      box-shadow: 0 0 8px var(--accent);
+      border-color: var(--accent);
+    }
+    .modal-buttons {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+    .modal-buttons button {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+    .modal-buttons button:disabled {
+      background: #bbb !important;
+      cursor: not-allowed;
+      color: #666;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #003f7f;
+    }
+    .btn-secondary {
+      background: #ddd;
+      color: #333;
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: #bbb;
+    }
+    .error-msg {
+      color: #c53030;
+      font-weight: 700;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+    #changeCodeBtn {
+      background: #ffb700;
+      color: #03335a;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #changeCodeBtn:hover {
+      background: #cc9900;
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- === Tu contenido intacto === -->
+    <header>
+      <div class="title-container">
+        <div class="title">Lleva tu control</div>
+        <div class="subtitle">Registra cada tanqueo: carro o moto</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div class="right-corner" title="100% CATRACHO">100 % CATRACHO</div>
+        <div class="initials" title="Tus iniciales">DVHS</div>
+      </div>
+    </header>
+
+    <section class="card">
+      <form id="form">
+        <div>
+          <label for="vehicle">¿Carro o Moto?</label>
+          <select id="vehicle" class="input" required>
+            <option value="Carro">Carro</option>
+            <option value="Moto">Moto</option>
+          </select>
+        </div>
+        <div>
+          <label for="amount">¿Cuánto se le metió? (litros o lempiras)</label>
+          <input id="amount" type="number" step="0.01" min="0" class="input" placeholder="Ej: 20 (litros) o 500 (Lps)" required>
+        </div>
+        <div>
+          <label for="kms">Kilómetros recorridos desde último tanqueo</label>
+          <input id="kms" type="number" step="0.1" min="0" class="input" placeholder="Ej: 120.5" required>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end;">
+          <label style="visibility:hidden">enviar</label>
+          <button id="saveBtn" type="button">Guardar registro</button>
+        </div>
+      </form>
+
+      <div class="top-row" style="margin-top:10px">
+        <div class="small">Registros guardados localmente en tu dispositivo (localStorage).</div>
+        <div style="display:flex;gap:12px">
+          <button id="exportBtn" class="ghost">Exportar a Excel (XLSX)</button>
+          <button id="clearBtn" class="ghost">Borrar todo (clave requerida)</button>
+          <button id="changeCodeBtn" class="ghost" title="Cambiar código de seguridad">Cambiar código</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="font-weight:700; color: #03335a;">Historial</div>
+        <div class="badge" id="count">0 registros</div>
+      </div>
+      <div style="overflow:auto;max-height:360px;">
+        <table id="table" aria-label="Tabla de registros">
+          <thead>
+            <tr>
+              <th>Fecha y hora</th>
+              <th>Vehículo</th>
+              <th>Cantidad</th>
+              <th>Kilómetros</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer style="margin-top:16px;text-align:center;color:var(--muted);font-size:0.85rem">
+      Hecho para uso personal — abre este archivo en tu móvil o PC. Compatible con navegadores modernos.
+    </footer>
+  </div>
+
+<!-- Modal Redes (solo esta parte reemplazada) -->
+<div id="modalRedes" aria-modal="true" role="dialog">
+  <div class="modal-content">
+    <h2>Sígueme en mis redes</h2>
+    <p>Apóyame y mantente al día con mis contenidos</p>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:15px;">
+      <a href="https://www.tiktok.com/@spideybiker_hn?_t=ZM-8zGvk1q29S9&_r=1" target="_blank" style="text-decoration:none;">
+        <button style="width:100%;padding:10px 0;background:#69C9D0;color:white;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;">TikTok</button>
+      </a>
+      <a href="https://www.facebook.com/share/16qMhxDhW5/" target="_blank" style="text-decoration:none;">
+        <button style="width:100%;padding:10px 0;background:#3b5998;color:white;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;">Facebook</button>
+      </a>
+      <a href="https://www.instagram.com/spideybiker_hn?igsh=aGh2dHhmNmRyOA==" target="_blank" style="text-decoration:none;">
+        <button style="width:100%;padding:10px 0;background:#E1306C;color:white;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;">Instagram</button>
+      </a>
+    </div>
+    <button id="continuarRedes" style="margin-top:18px;padding:10px 15px;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Continuar</button>
+  </div>
+</div>
+
+
+  <!-- === Modal Código de seguridad (igual que tu original) === -->
+  <div id="modalCode" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <h2>Crear código de seguridad</h2>
+      <p>Ingresa un código único de 4 dígitos que se usará para proteger tus datos.</p>
+      <input id="codeInput" type="password" maxlength="4" inputmode="numeric">
+      <div class="error-msg" id="codeError"></div>
+      <div class="modal-buttons">
+        <button id="saveCodeBtn" class="btn-primary" disabled>Guardar código</button>
+      </div>
+    </div>
+  </div>
+  <div id="modalChangeCode" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <h2>Cambiar código de seguridad</h2>
+      <p>Ingresa el código actual para continuar.</p>
+      <input id="currentCodeInput" type="password" maxlength="4" inputmode="numeric">
+      <div class="error-msg" id="changeCodeError"></div>
+      <div class="modal-buttons">
+        <button id="confirmCurrentCodeBtn" class="btn-primary" disabled>Confirmar código</button>
+        <button id="cancelChangeCodeBtn" class="btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <div id="modalPromptCode" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <h2>Ingresar código de seguridad</h2>
+      <p>Para confirmar esta acción, ingresa tu código de 4 dígitos.</p>
+      <input id="promptCodeInput" type="password" maxlength="4" inputmode="numeric">
+      <div class="error-msg" id="promptCodeError"></div>
+      <div class="modal-buttons">
+        <button id="confirmPromptCodeBtn" class="btn-primary" disabled>Confirmar</button>
+        <button id="cancelPromptCodeBtn" class="btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- === Librería XLSX === -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <script>
+  (function(){
+    const STORAGE_KEY = 'lleva_tu_control_registros_v1';
+    const CODE_KEY = 'LlevaTuControlCode';
+    const el = id=>document.getElementById(id);
+    const vehicle = el('vehicle');
+    const amount = el('amount');
+    const kms = el('kms');
+    const saveBtn = el('saveBtn');
+    const exportBtn = el('exportBtn');
+    const clearBtn = el('clearBtn');
+    const tableBody = document.querySelector('#table tbody');
+    const countBadge = el('count');
+    const changeCodeBtn = el('changeCodeBtn');
+
+    const modalCode = el('modalCode'), codeInput = el('codeInput'), codeError = el('codeError'), saveCodeBtn = el('saveCodeBtn');
+    const modalChangeCode = el('modalChangeCode'), currentCodeInput = el('currentCodeInput'), changeCodeError = el('changeCodeError'), confirmCurrentCodeBtn = el('confirmCurrentCodeBtn'), cancelChangeCodeBtn = el('cancelChangeCodeBtn');
+    const modalPromptCode = el('modalPromptCode'), promptCodeInput = el('promptCodeInput'), promptCodeError = el('promptCodeError'), confirmPromptCodeBtn = el('confirmPromptCodeBtn'), cancelPromptCodeBtn = el('cancelPromptCodeBtn');
+
+    // === Modal Redes ===
+    const modalRedes = el('modalRedes'), continuarRedes = el('continuarRedes');
+
+    if(!localStorage.getItem('modalRedesShown')){
+        showModal(modalRedes);
+    }
+
+    continuarRedes.onclick = ()=>{
+        hideModal(modalRedes);
+        localStorage.setItem('modalRedesShown','true');
+        if(!localStorage.getItem(CODE_KEY)){ 
+            showModal(modalCode); 
+        }
+    }
+
+    let securityCode = null, failAttempts=0, lockTimeout=null;
+    let actionToConfirm = null;
+
+    function nowISO(){ return new Date().toISOString(); }
+    function formatLocal(iso){ return new Date(iso).toLocaleString(); }
+
+    function load(){ const raw = localStorage.getItem(STORAGE_KEY); if(!raw) return []; try{return JSON.parse(raw)||[];}catch(e){return []} }
+    function saveAll(arr){ localStorage.setItem(STORAGE_KEY,JSON.stringify(arr)); render(); }
+    function addRecord(rec){ const arr = load(); arr.unshift(rec); saveAll(arr); }
+
+    function render(){
+      const arr = load();
+      tableBody.innerHTML='';
+      arr.forEach((r,i)=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${formatLocal(r.ts)}</td><td>${r.vehicle}</td><td>${r.amount}</td><td>${r.kms}</td><td><button class="delete-single" data-i="${i}">Borrar</button></td>`;
+        tableBody.appendChild(tr);
+      });
+      countBadge.textContent=`${arr.length} registro${arr.length===1?'':'s'}`;
+    }
+
+    saveBtn.onclick=()=>{ 
+      addRecord({ts: nowISO(), vehicle:vehicle.value, amount:amount.value, kms:kms.value});
+      amount.value=''; kms.value=''; 
+    }
+
+    tableBody.addEventListener('click',e=>{
+      if(e.target.matches('.delete-single')){
+        const i=e.target.dataset.i;
+        const arr = load();
+        arr.splice(i,1); saveAll(arr);
+      }
+    });
+
+    // ==== NUEVO: Exportar Excel ====
+    exportBtn.onclick = ()=>{
+      const arr = load();
+      if(arr.length===0){ alert('No hay registros para exportar.'); return; }
+      const vehiculos = {};
+      arr.forEach(r=>{
+        if(!vehiculos[r.vehicle]) vehiculos[r.vehicle]=[];
+        vehiculos[r.vehicle].push(r);
+      });
+      const wb = XLSX.utils.book_new();
+      Object.keys(vehiculos).forEach(v=>{
+        const datos = vehiculos[v].map(r=>({
+          'Fecha y hora': formatLocal(r.ts),
+          'Vehículo': r.vehicle,
+          'Cantidad': Number(r.amount),
+          'Kilómetros': Number(r.kms)
+        }));
+        const totalCantidad = vehiculos[v].reduce((acc,cur)=>acc + Number(cur.amount),0);
+        datos.push({'Fecha y hora':'','Vehículo':'Total','Cantidad':totalCantidad,'Kilómetros':''});
+        const ws = XLSX.utils.json_to_sheet(datos, {header:['Fecha y hora','Vehículo','Cantidad','Kilómetros']});
+        XLSX.utils.book_append_sheet(wb, ws, v);
+      });
+      XLSX.writeFile(wb,'lleva_tu_control.xlsx');
+    };
+
+    // ==== Código de seguridad ====
+    function showModal(modal){ modal.classList.add('active'); }
+    function hideModal(modal){ modal.classList.remove('active'); }
+
+    if(!localStorage.getItem(CODE_KEY)){ showModal(modalCode); }
+
+    codeInput.addEventListener('input', ()=>{
+      saveCodeBtn.disabled = codeInput.value.length!==4;
+    });
+    saveCodeBtn.onclick = ()=>{
+      localStorage.setItem(CODE_KEY, codeInput.value);
+      securityCode = codeInput.value;
+      codeInput.value=''; hideModal(modalCode);
+    }
+
+    changeCodeBtn.onclick=()=>{ showModal(modalChangeCode); }
+    currentCodeInput.addEventListener('input', ()=>{ confirmCurrentCodeBtn.disabled=currentCodeInput.value.length!==4; });
+    confirmCurrentCodeBtn.onclick=()=>{
+      if(currentCodeInput.value === localStorage.getItem(CODE_KEY)){
+        securityCode = currentCodeInput.value;
+        currentCodeInput.value=''; hideModal(modalChangeCode); showModal(modalCode);
+      } else { changeCodeError.textContent='Código incorrecto'; setTimeout(()=>changeCodeError.textContent='',2000); }
+    }
+    cancelChangeCodeBtn.onclick=()=>{ currentCodeInput.value=''; hideModal(modalChangeCode); }
+
+    // Borrar todo con código
+    clearBtn.onclick = ()=>{
+      actionToConfirm='clearAll';
+      showModal(modalPromptCode);
+    }
+    promptCodeInput.addEventListener('input', ()=>{ confirmPromptCodeBtn.disabled = promptCodeInput.value.length!==4; });
+    confirmPromptCodeBtn.onclick = ()=>{
+      if(promptCodeInput.value === localStorage.getItem(CODE_KEY)){
+        if(actionToConfirm==='clearAll'){ localStorage.removeItem(STORAGE_KEY); render(); }
+        promptCodeInput.value=''; hideModal(modalPromptCode);
+      } else { promptCodeError.textContent='Código incorrecto'; setTimeout(()=>promptCodeError.textContent='',2000); }
+    }
+    cancelPromptCodeBtn.onclick=()=>{ promptCodeInput.value=''; hideModal(modalPromptCode); }
+
+    render();
+  })();
+  </script>
+</body>
+</html>
